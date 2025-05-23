@@ -3,7 +3,7 @@ import React from 'react'
 function home() {
   return (
     <div>
-      <img src="/public/image.png" alt="pene"/>
+      <img src="/public/mosquito.jpg" alt="pene"/>
 
     </div>
   )
