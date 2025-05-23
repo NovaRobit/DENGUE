@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const { log } = require('console');
 
 const app = express();
 const PORT = 3000;
@@ -30,19 +31,28 @@ function leerDatos() {
 // Ruta para obtener todos los registros
 app.get('/items', (req, res) => {
   const datos = leerDatos();
+  console.log(datos);
+  
   res.json(datos);
 });
 
 // Ruta para obtener un ítem por su número
-app.get('/items/:numero', (req, res) => {
-  const datos = leerDatos();
-  const numero = parseInt(req.params.numero);
-  const item = datos.find(d => d.numero === numero);
+app.get('/items/:id', (req, res) => {
+  const id = req.params.id;
+  console.log('[DEBUG] ID recibido en backend:', id);
 
+  const datos = leerDatos(); // Usar la función que ya tienes definida
+  console.log('[DEBUG] Datos leídos:', datos);
+
+  // Buscar el ítem (convertir id a número para comparar)
+  const item = datos.find(i => i.id === Number(id));
+  
   if (item) {
+    console.log('[DEBUG] Item encontrado:', item);
     res.json(item);
   } else {
-    res.status(404).json({ mensaje: 'Elemento no encontrado' });
+    console.log('[DEBUG] Item no encontrado para ID:', id);
+    res.status(404).json({ mensaje: 'Item no encontrado' });
   }
 });
 

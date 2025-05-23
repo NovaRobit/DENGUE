@@ -1,70 +1,140 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function DetalleItem({ id }) {
-  const [item, setItem] = useState(null);
+function ListaItems() {
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    axios.get(`http://localhost:3000/items/${id}`)
+    axios.get('http://localhost:3000/items')
       .then(response => {
-        setItem(response.data);
+        setItems(response.data);
         setLoading(false);
       })
       .catch(err => {
         setError(err.response?.data?.mensaje || err.message);
         setLoading(false);
       });
-  }, [id]);
+  }, []);
+
+  // Función para desglosar valores con formato "a/b/c/d"
+  const desglosarValor = (valor) => {
+    if (typeof valor === 'string' && valor.includes('/')) {
+      const [total, conAgua, conLarvas, tratados] = valor.split('/');
+      return (
+        <span>
+          {total} (Total: {total}, Con agua: {conAgua}, Con larvas: {conLarvas}, Tratados: {tratados})
+        </span>
+      );
+    }
+    return valor;
+  };
 
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div>
-      <h2>Detalle del Item #{item.id}</h2>
-
-      <table border="1" cellPadding="5" style={{ marginBottom: '20px' }}>
+      <h2>Lista de Items</h2>
+      
+      {/* Tabla principal */}
+      <table border="1" cellPadding="5" style={{ width: '100%', marginBottom: '20px', borderCollapse: 'collapse' }}>
         <thead>
-          <tr><th>Campo</th><th>Valor</th></tr>
+          <tr style={{ backgroundColor: '#f2f2f2' }}>
+            <th style={{ padding: '10px' }}>ID</th>
+            <th style={{ padding: '10px' }}>Número</th>
+            <th style={{ padding: '10px' }}>Calle</th>
+            <th style={{ padding: '10px' }}>Habitantes</th>
+            <th style={{ padding: '10px' }}>Manzana</th>
+            <th style={{ padding: '10px' }}>Sector</th>
+            <th style={{ padding: '10px' }}>Positivos</th>
+            <th style={{ padding: '10px' }}>Acciones</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td>Número</td><td>{item.numero}</td></tr>
-          <tr><td>Calle</td><td>{item.calle}</td></tr>
-          <tr><td>Habitantes</td><td>{item.habitantes}</td></tr>
-          <tr><td>Manzana</td><td>{item.manzana}</td></tr>
-          <tr><td>Sector</td><td>{item.sector}</td></tr>
+          {items.map(item => (
+            <tr key={item.id}>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.id}</td>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.numero}</td>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.calle}</td>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.habitantes}</td>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.manzana}</td>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.sector}</td>
+              <td style={{ 
+                padding: '8px', 
+                border: '1px solid #ddd',
+                backgroundColor: item.positivos_totales > 0 ? '#ffdddd' : '#ddffdd',
+                fontWeight: 'bold'
+              }}>
+                {item.positivos_totales}
+              </td>
+              <td style={{ padding: '8px', border: '1px solid #ddd' }}>
+                <button 
+                  style={{ 
+                    padding: '5px 10px', 
+                    backgroundColor: '#4CAF50', 
+                    color: 'white', 
+                    border: 'none', 
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => alert(`Mostrar detalles del item ${item.id}`)}
+                >
+                  Ver Detalles
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
-      <table border="1" cellPadding="5" style={{ marginBottom: '20px' }}>
+      {/* Tabla de resumen de inventario */}
+      <table border="1" cellPadding="5" style={{ width: '100%', marginBottom: '20px', borderCollapse: 'collapse' }}>
         <thead>
-          <tr><th>Inventario</th><th>Cantidad</th></tr>
+          <tr style={{ backgroundColor: '#f2f2f2' }}>
+            <th colSpan="4" style={{ padding: '10px', textAlign: 'center' }}>
+              Resumen de Inventario de Recipientes
+            </th>
+          </tr>
+          <tr>
+            <th style={{ padding: '8px', width: '25%' }}>Recipiente</th>
+            <th style={{ padding: '8px', width: '25%' }}>Total</th>
+            <th style={{ padding: '8px', width: '25%' }}>Con Larvas</th>
+            <th style={{ padding: '8px', width: '25%' }}>Tratados</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td>Pilas</td><td>{item.pilas}</td></tr>
-          <tr><td>Bebederos</td><td>{item.bebederos}</td></tr>
-          <tr><td>Tanques</td><td>{item.tanques}</td></tr>
-          <tr><td>Llantas</td><td>{item.llantas}</td></tr>
-          <tr><td>Lote Baldío</td><td>{item.lote_baldio}</td></tr>
-          <tr><td>Pozos</td><td>{item.pozos}</td></tr>
-          <tr><td>Macetas</td><td>{item.macetas}</td></tr>
-          <tr><td>Chicos</td><td>{item.chicos}</td></tr>
-          <tr><td>Tinacos</td><td>{item.tinacos}</td></tr>
-          <tr><td>Cubetas</td><td>{item.cubetas}</td></tr>
-          <tr><td>Cisternas</td><td>{item.cisternas}</td></tr>
-          <tr><td>Floreros</td><td>{item.floreros}</td></tr>
-          <tr><td>Baños</td><td>{item.banos}</td></tr>
+          {items.map(item => (
+            <React.Fragment key={`inventario-${item.id}`}>
+              <tr>
+                <td colSpan="4" style={{ 
+                  padding: '8px', 
+                  backgroundColor: '#e6f7ff',
+                  fontWeight: 'bold'
+                }}>
+                  Vivienda #{item.numero} - {item.calle}
+                </td>
+              </tr>
+              <tr>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>Pilas</td>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.pilas.split('/')[0]}</td>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.pilas.split('/')[2]}</td>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.pilas.split('/')[3]}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>Bebederos</td>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.bebederos.split('/')[0]}</td>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.bebederos.split('/')[2]}</td>
+                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.bebederos.split('/')[3]}</td>
+              </tr>
+              {/* Agrega más filas para otros recipientes según sea necesario */}
+            </React.Fragment>
+          ))}
         </tbody>
       </table>
-
-      <p><strong>Positivos Totales:</strong> {item.positivos_totales}</p>
     </div>
   );
 }
 
-export default DetalleItem;
+export default ListaItems;
