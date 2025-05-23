@@ -1,0 +1,100 @@
+/* tabla.css */
+
+.alert {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8d7da; /* Color suave para la alerta */
+    border: 1px solid #f5c6cb; /* Borde suave */
+    border-radius: 5px; /* Bordes redondeados */
+    color: #721c24;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.table {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px; /* Bordes redondeados para la tabla */
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.table th {
+    background-color: #007bff; /* Fondo azul vibrante para encabezados */
+    color: white; /* Texto blanco */
+    font-weight: bold;
+    border-radius: 8px 8px 0 0; /* Bordes redondeados en el encabezado */
+    padding: 12px 16px; /* Espaciado */
+}
+
+.table td {
+    background-color: #ffffff; /* Fondo blanco para celdas */
+    color: #495057;
+    padding: 12px 16px; /* Espaciado para las celdas */
+    border-top: 1px solid #dee2e6; /* Línea sutil entre las filas */
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    transition: background-color 0.3s ease; /* Transición suave en el hover */
+}
+
+.table tbody tr:hover {
+    background-color: #e1f1ff; /* Fondo suave al pasar el ratón */
+    transform: translateY(-2px); /* Movimiento sutil al pasar el ratón */
+}
+
+.btn {
+    margin-right: 8px;
+    padding: 8px 15px; /* Espaciado mayor para botones */
+    border-radius: 5px; /* Bordes redondeados */
+    font-weight: 600;
+    transition: all 0.3s ease; /* Transiciones suaves */
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Efecto de movimiento al pasar el ratón */
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    border: 2px solid #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+    transform: translateY(-2px); /* Efecto de movimiento */
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border: 2px solid #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-2px); /* Efecto de movimiento */
+}
+
+.btn-outline-warning {
+    color: #ffc107;
+    border: 2px solid #ffc107;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: white;
+    transform: translateY(-2px); /* Efecto de movimiento */
+}
