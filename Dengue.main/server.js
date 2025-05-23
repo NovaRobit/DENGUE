@@ -1,39 +1,87 @@
-// Importamos las bibliotecas necesarias
-// - express: para crear el servidor y manejar las rutas.
-// - cors: para permitir el acceso al servidor desde otros dominios.
-// - body-parser: para manejar datos enviados en formato JSON o formularios.
 const express = require('express');
-const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 const bodyParser = require('body-parser');
 
-// Creamos una instancia de la aplicación Express, que será nuestro servidor.
 const app = express();
+const PORT = 3000;
 
-// Definimos el puerto en el que se ejecutará el servidor.
-// Usamos una variable de entorno (process.env.PORT) si está definida, o el puerto 3001 por defecto.
-const port = process.env.PORT || 3001;
+// Ruta absoluta al archivo JSON en la carpeta db
+const DATA_PATH = path.join(__dirname, 'db', 'data.json');
 
-// Usamos middlewares:
-// - cors(): habilita la política CORS para que otros dominios puedan acceder al servidor.
-// - bodyParser.json(): permite recibir y procesar datos en formato JSON en las solicitudes.
-// - bodyParser.urlencoded(): permite procesar datos enviados desde formularios HTML.
-app.use(cors());
+// Middleware para leer JSON del cuerpo de la solicitud
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-// Importamos las rutas de "alumnos" y "maestros".
-// Estas rutas se encargan de manejar las solicitudes relacionadas con cada módulo o entidad.
-const alumnosRoutes = require('./routes/alumnos');
-const maestrosRoutes = require('./routes/maestros');
+// Leer datos del archivo
+function leerDatos() {
+  const datos = fs.readFileSync(DATA_PATH, 'utf8');
+  return JSON.parse(datos);
+}
 
-// Asignamos las rutas específicas a un prefijo:
-// - Las rutas relacionadas con "alumnos" estarán bajo "/api/alumnos".
-// - Las rutas relacionadas con "maestros" estarán bajo "/api/maestros".
-app.use('/api/alumnos', alumnosRoutes);
-app.use('/api/maestros', maestrosRoutes);
+// Guardar datos en el archivo
+function guardarDatos(data) {
+  fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
+}
 
-// Iniciamos el servidor para que escuche las solicitudes en el puerto definido.
-// Una vez activo, se imprime un mensaje en la consola con la URL de acceso.
-app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+// GET /items - obtener todos los elementos
+app.get('/items', (req, res) => {
+  const datos = leerDatos();
+  res.json(datos);
+});
+
+// GET /items/:id - obtener un elemento por ID
+app.get('/items/:id', (req, res) => {
+  const datos = leerDatos();
+  const item = datos.find(d => d.id === parseInt(req.params.id));
+  item ? res.json(item) : res.status(404).json({ mensaje: 'Elemento no encontrado' });
+});
+
+// POST /items - agregar un nuevo elemento
+app.post('/items', (req, res) => {
+  const datos = leerDatos();
+  const nuevo = req.body;
+
+  if (!nuevo.nombre) {
+    return res.status(400).json({ mensaje: 'El campo "nombre" es obligatorio' });
+  }
+
+  nuevo.id = datos.length > 0 ? datos[datos.length - 1].id + 1 : 1;
+  datos.push(nuevo);
+  guardarDatos(datos);
+  res.status(201).json(nuevo);
+});
+
+// PUT /items/:id - actualizar un elemento
+app.put('/items/:id', (req, res) => {
+  const datos = leerDatos();
+  const id = parseInt(req.params.id);
+  const index = datos.findIndex(d => d.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ mensaje: 'Elemento no encontrado' });
+  }
+
+  const actualizado = { ...datos[index], ...req.body, id };
+  datos[index] = actualizado;
+  guardarDatos(datos);
+  res.json(actualizado);
+});
+
+// DELETE /items/:id - eliminar un elemento
+app.delete('/items/:id', (req, res) => {
+  const datos = leerDatos();
+  const id = parseInt(req.params.id);
+  const filtrados = datos.filter(d => d.id !== id);
+
+  if (datos.length === filtrados.length) {
+    return res.status(404).json({ mensaje: 'Elemento no encontrado' });
+  }
+
+  guardarDatos(filtrados);
+  res.json({ mensaje: 'Elemento eliminado correctamente' });
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
