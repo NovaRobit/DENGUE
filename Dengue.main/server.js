@@ -1,87 +1,52 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
 
-// Ruta absoluta al archivo JSON en la carpeta db
+// Habilitar CORS
+app.use(cors());
+
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Ruta al archivo JSON
 const DATA_PATH = path.join(__dirname, 'db', 'data.json');
 
-// Middleware para leer JSON del cuerpo de la solicitud
-app.use(bodyParser.json());
-
-// Leer datos del archivo
+// Leer datos del archivo con manejo de errores
 function leerDatos() {
-  const datos = fs.readFileSync(DATA_PATH, 'utf8');
-  return JSON.parse(datos);
+  try {
+    const rawData = fs.readFileSync(DATA_PATH, 'utf8');
+    if (!rawData.trim()) return [];
+    return JSON.parse(rawData);
+  } catch (error) {
+    console.error("Error leyendo el archivo JSON:", error);
+    return [];
+  }
 }
 
-// Guardar datos en el archivo
-function guardarDatos(data) {
-  fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
-}
-
-// GET /items - obtener todos los elementos
+// Ruta para obtener todos los registros
 app.get('/items', (req, res) => {
   const datos = leerDatos();
   res.json(datos);
 });
 
-// GET /items/:id - obtener un elemento por ID
-app.get('/items/:id', (req, res) => {
+// Ruta para obtener un ítem por su número
+app.get('/items/:numero', (req, res) => {
   const datos = leerDatos();
-  const item = datos.find(d => d.id === parseInt(req.params.id));
-  item ? res.json(item) : res.status(404).json({ mensaje: 'Elemento no encontrado' });
-});
+  const numero = parseInt(req.params.numero);
+  const item = datos.find(d => d.numero === numero);
 
-// POST /items - agregar un nuevo elemento
-app.post('/items', (req, res) => {
-  const datos = leerDatos();
-  const nuevo = req.body;
-
-  if (!nuevo.nombre) {
-    return res.status(400).json({ mensaje: 'El campo "nombre" es obligatorio' });
+  if (item) {
+    res.json(item);
+  } else {
+    res.status(404).json({ mensaje: 'Elemento no encontrado' });
   }
-
-  nuevo.id = datos.length > 0 ? datos[datos.length - 1].id + 1 : 1;
-  datos.push(nuevo);
-  guardarDatos(datos);
-  res.status(201).json(nuevo);
 });
 
-// PUT /items/:id - actualizar un elemento
-app.put('/items/:id', (req, res) => {
-  const datos = leerDatos();
-  const id = parseInt(req.params.id);
-  const index = datos.findIndex(d => d.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({ mensaje: 'Elemento no encontrado' });
-  }
-
-  const actualizado = { ...datos[index], ...req.body, id };
-  datos[index] = actualizado;
-  guardarDatos(datos);
-  res.json(actualizado);
-});
-
-// DELETE /items/:id - eliminar un elemento
-app.delete('/items/:id', (req, res) => {
-  const datos = leerDatos();
-  const id = parseInt(req.params.id);
-  const filtrados = datos.filter(d => d.id !== id);
-
-  if (datos.length === filtrados.length) {
-    return res.status(404).json({ mensaje: 'Elemento no encontrado' });
-  }
-
-  guardarDatos(filtrados);
-  res.json({ mensaje: 'Elemento eliminado correctamente' });
-});
-
-// Iniciar servidor
+// Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });

@@ -1,0 +1,23 @@
+[
+  {
+    "numero": 1,
+    "calle": "Hidalgo #123",
+    "habitantes": 5,
+    "manzana": "MZ-01",
+    "sector": "SEC-A",
+    "pilas": "1/1/0/0",
+    "bebederos": "1/1/0/0",
+    "tanques": "1/1/1/0",
+    "llantas": "2/2/1/1",
+    "lote_baldio": "0/0/0/0",
+    "pozos": "0/0/0/0",
+    "macetas": "1/1/0/0",
+    "chicos": "0/0/0/0",
+    "tinacos": "1/1/0/0",
+    "cubetas": "1/1/1/0",
+    "cisternas": "0/0/0/0",
+    "floreros": "1/1/0/0",
+    "banos": "0/0/0/0",
+    "positivos_totales": 3
+  }
+]
