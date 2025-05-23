@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 
-function home() {
+function Home() {
   return (
-    <div>
-      <img src="/public/mosquito.jpg" alt="pene"/>
-
+    <div style={{ textAlign: 'center' }}>
+      <img src="/image.png" alt="mosquitou" />
+      <h2>HOLA</h2>
     </div>
-  )
+  );
 }
 
-export default home
+export default Home;
