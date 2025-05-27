@@ -1,5 +1,28 @@
 const mongoose = require('mongoose');
 
+const recipienteSchema = new mongoose.Schema({
+  E: { type: String, default: '' },
+  A: { type: String, default: '' },
+  P: { type: String, default: '' },
+  L: { type: String, default: '' }
+}, { _id: false });
+
+const recipientesSchema = new mongoose.Schema({
+  Tanques: recipienteSchema,
+  Tambos: recipienteSchema,
+  Llantas: recipienteSchema,
+  Piletas: recipienteSchema,
+  Tinacos: recipienteSchema,
+  Inaccesibles: recipienteSchema,
+  Desechables: recipienteSchema,
+  Floreros: recipienteSchema,
+  Animales: recipienteSchema,
+  Diversos: recipienteSchema,
+  Grandes: recipienteSchema,
+  'Ricos en sombra': recipienteSchema,
+  Otros: recipienteSchema
+}, { _id: false });
+
 const ItemSchema = new mongoose.Schema({
   colonia: String,
   municipio: String,
@@ -10,13 +33,14 @@ const ItemSchema = new mongoose.Schema({
   manzanas_existentes: Number,
   habitantes: Number,
   encuesta: String,
-  TipodeEstudio:{
-     type: String,
-    enum: ['Encuesta', 'Verificacion'], 
+  TipodeEstudio: {
+    type: String,
+    enum: ['Encuesta', 'Verificacion'],
     required: true
   },
   semana_epidemiologica: Number,
-  // Los campos que ya tenías antes (opcional según si usas estos datos):
+
+  // Datos opcionales adicionales
   numero: String,
   calle: String,
   positivos_totales: Number,
@@ -24,7 +48,9 @@ const ItemSchema = new mongoose.Schema({
   sector: String,
   pilas: String,
   bebederos: String,
-  // ...otros recipientes si los agregaste
+
+  // Aquí van todos los recipientes agrupados
+  recipientes: recipientesSchema
 });
 
 module.exports = mongoose.model('Item', ItemSchema);

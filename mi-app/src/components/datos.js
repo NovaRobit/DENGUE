@@ -138,56 +138,6 @@ function ListaItems() {
         </tbody>
       </table>
 
-      {/* Tabla de resumen de recipientes */}
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            <th colSpan="4" style={{
-              padding: '15px',
-              textAlign: 'center',
-              backgroundColor: '#007BFF',
-              color: 'white',
-              fontSize: '18px',
-              fontWeight: '600',
-            }}>
-              Resumen de Inventario de Recipientes
-            </th>
-          </tr>
-          <tr>
-            <th style={headerCellStyle}>Recipiente</th>
-            <th style={headerCellStyle}>Total</th>
-            <th style={headerCellStyle}>Con Larvas</th>
-            <th style={headerCellStyle}>Tratados</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <React.Fragment key={`inventario-${item._id}`}>
-              <tr style={{ backgroundColor: '#d9eefd', fontWeight: '700' }}>
-                <td colSpan="4" style={{ padding: '10px 15px', textAlign: 'center' }}>
-                  {item.colonia} ({item.municipio})
-                </td>
-              </tr>
-              {item.pilas && (
-                <tr style={rowStyle}>
-                  <td style={cellStyle}>Pilas</td>
-                  <td style={cellStyle}>{item.pilas.split('/')[0]}</td>
-                  <td style={cellStyle}>{item.pilas.split('/')[2]}</td>
-                  <td style={cellStyle}>{item.pilas.split('/')[3]}</td>
-                </tr>
-              )}
-              {item.bebederos && (
-                <tr style={rowStyle}>
-                  <td style={cellStyle}>Bebederos</td>
-                  <td style={cellStyle}>{item.bebederos.split('/')[0]}</td>
-                  <td style={cellStyle}>{item.bebederos.split('/')[2]}</td>
-                  <td style={cellStyle}>{item.bebederos.split('/')[3]}</td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }

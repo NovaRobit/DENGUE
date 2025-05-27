@@ -34,7 +34,7 @@ function Menu() {
   // Enlaces del menú
   const navLinks = [
     { path: "/datos", label: "Datos" },
-    { path: "/agregardatos", label: "Agregar Datos" },
+    { path: "/Multipaso", label: "Agregar Datos" },
     { path: "/archivos", label: "Archivos" },
   ];
 
